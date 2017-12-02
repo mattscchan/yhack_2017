@@ -9,6 +9,7 @@ from nltk.corpus import stopwords as StopWords
 import numpy as np
 from gensim.models import word2vec
 
+pathToBinVectors = '../../GoogleNews-vectors-negative300.bin'
 
 class StemTokenizer(object):
      def __init__(self):
@@ -108,8 +109,6 @@ def get_highlight_sentences(sent_list, sent_probs, min_num=2, percent=0.2):
 
 	return highlights
 
-def 
-
 def write_json(highlights):
 	obj = {"payload": highlights}
 
@@ -124,17 +123,19 @@ def parse_json(filename):
 	return [json_obj['target']], json_obj['cluster_list']
 
 def main(args):
-	target_article, cluster_list = parse_json(args.filename) 
+	# target_article, cluster_list = parse_json(args.filename) 
 	
-	words_sent, bigram_sent, trigram_sent, sent_list, gram_probs = preprocess(target_article)
-	sent_probs = score_sentences(words_sent, bigram_sent, trigram_sent, sent_list, gram_probs)
-	target_highlights = get_highlight_sentences(sent_list, sent_probs)
+	# words_sent, bigram_sent, trigram_sent, sent_list, gram_probs = preprocess(target_article)
+	# sent_probs = score_sentences(words_sent, bigram_sent, trigram_sent, sent_list, gram_probs)
+	# target_highlights = get_highlight_sentences(sent_list, sent_probs)
 
-	words_sent, bigram_sent, trigram_sent, sent_list, gram_probs = preprocess(cluster_list)
-	sent_probs = score_sentences(words_sent, bigram_sent, trigram_sent, sent_list, gram_probs)
-	cluster_highlights = get_highlight_sentences(sent_list, sent_probs)
+	# words_sent, bigram_sent, trigram_sent, sent_list, gram_probs = preprocess(cluster_list)
+	# sent_probs = score_sentences(words_sent, bigram_sent, trigram_sent, sent_list, gram_probs)
+	# cluster_highlights = get_highlight_sentences(sent_list, sent_probs)
 
-
+	print "Loading the data file... Please wait..."
+	model1 = word2vec.Word2Vec.load_word2vec_format(pathToBinVectors, binary=True)
+	print "Successfully loaded 3.6 G bin file!"
 
 	write_json(highlights)
 
