@@ -49,7 +49,7 @@ router.post('/check', function(req, res, next) {
   var target = req.body.target;
   var cluster = req.body.cluster;
 
-  var pathToMatthew = __dirname + '/../src/';
+  var pathToMatthew = __dirname + '/../../src/';
   fs.writeFile(pathToMatthew + 'input.json', JSON.stringify(req.body), 'utf8', function (err) {
     if (err) {
       return console.log(err);
@@ -69,16 +69,16 @@ router.post('/check', function(req, res, next) {
       res.send({
         status: 'failed'
       })
+    } else {
+      // results is an array consisting of messages collected during execution
+      var output = require(pathToMatthew + 'output.json');
+      console.log('results:', results);
+      console.log('output.json:', output);
+      res.send({
+        status: 'success',
+        output: JSON.parse(output)
+      });
     }
-
-    // results is an array consisting of messages collected during execution
-    var output = require(pathToMatthew + 'output.json');
-    console.log('results:', results);
-    console.log('output.json:', output);
-    res.send({
-      status: 'success',
-      output: JSON.parse(output)
-    });
   });
 });
 
