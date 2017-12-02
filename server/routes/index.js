@@ -69,7 +69,7 @@ router.post('/check', function(req, res, next) {
       })
     } else {
       // results is an array consisting of messages collected during execution
-      var output = require(pathToMatthew + 'output.json');
+      var output = require(pathToMatthew + '../output.json');
       console.log('results:', results);
       console.log('output.json:', output);
       res.send({
