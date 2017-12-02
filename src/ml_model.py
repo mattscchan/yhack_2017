@@ -9,7 +9,7 @@ from nltk.corpus import stopwords as StopWords
 import numpy as np
 from gensim.models import KeyedVectors
 
-# pathToBinVectors = '../../GoogleNews-vectors-negative300.bin'
+pathToBinVectors = '../../GoogleNews-vectors-negative300.bin'
 
 def ConvertVectorSetToVecAverageBased(vectorSet, ignore = []):
 	if len(ignore) == 0: 
@@ -19,13 +19,13 @@ def ConvertVectorSetToVecAverageBased(vectorSet, ignore = []):
 
 def PhraseToVec(phrase_list):
 	vectorSet = []
-	for sentence in phrase_list
-		for aWord in wordsInPhrase:
-			try:
-				wordVector=model1[aWord]
-				vectorSet.append(wordVector)
-			except:
-				pass
+		for sentence in phrase_list:
+			for aWord in wordsInPhrase:
+				try:
+					wordVector=model1[aWord]
+					vectorSet.append(wordVector)
+				except:
+					pass
 	return ConvertVectorSetToVecAverageBased(vectorSet)
 
 
