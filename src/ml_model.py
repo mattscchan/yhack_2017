@@ -11,9 +11,9 @@ from gensim.models import KeyedVectors
 
 pathToBinVectors = '../../GoogleNews-vectors-negative300.bin'
 
-print ("Loading the data file... Please wait...")
+# print ("Loading the data file... Please wait...")
 model1 = KeyedVectors.load_word2vec_format(pathToBinVectors, binary=True)
-print ("Successfully loaded 3.6 G bin file!")
+# print ("Successfully loaded 3.6 G bin file!")
 
 def ConvertVectorSetToVecAverageBased(vectorSet, ignore = []):
 	if len(ignore) == 0: 
@@ -29,7 +29,7 @@ def PhraseToVec(phrase_list):
 				wordVector=model1[aWord]
 				vectorSet.append(wordVector)
 			except:
-				print("MISS!", aWord)
+				# print("MISS!", aWord)
 				pass
 	return ConvertVectorSetToVecAverageBased(vectorSet)
 
@@ -187,11 +187,8 @@ def calculate_similarity(target_builder, cluster_builder, target_highlights):
 	for file in target_builder:
 		target_vec = PhraseToVec(file)
 
-	print(max_diff)
-	print(average_diff)
 	for i in range(0, len(cluster_builder)):
 		cosine_similarity = CosineSimilarity(vec_scores[i], target_vec)
-		print(cosine_similarity)
 
 		if cosine_similarity < max_diff:
 			return target_highlights, 1
@@ -235,8 +232,7 @@ def main():
 
 		highlights, high_confidence = calculate_similarity(target_builder, cluster_builder, target_highlights)
 		write_json(highlights, high_confidence)
-		print(highlights)
-		print(high_confidence)
+		print("DONE!")
 
 
 
