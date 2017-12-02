@@ -8,10 +8,19 @@ $(document).ready(function() {
 
   getSuggestions(title);
 
+  $(".hoverableSuggestableFakeNews").hover(function() {
 
+  });
 });
 
+var highlightYellow = function(string) {
+  var replaced = $("body").html().replace(string, '<span style="background-color: yellow;" class="hoverableSuggestableFakeNews">' + string + '</span>');
+  $("body").html(replaced);
+};
+
 var getSuggestions = function(string) {
+
+  highlightYellow(string);
 
   var parsedQuery = string.split(" ").join("+").replace(/<[^<>]*>/g, "");
   console.log(parsedQuery);
