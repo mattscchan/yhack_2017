@@ -5,3 +5,4 @@ npm-debug.*
 .DS_STORE
 server/node_modules/
 src/input.json
+data/word2vec-GoogleNews-vectors/**
