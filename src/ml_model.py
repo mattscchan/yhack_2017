@@ -19,13 +19,13 @@ def ConvertVectorSetToVecAverageBased(vectorSet, ignore = []):
 
 def PhraseToVec(phrase_list):
 	vectorSet = []
-		for sentence in phrase_list:
-			for aWord in wordsInPhrase:
-				try:
-					wordVector=model1[aWord]
-					vectorSet.append(wordVector)
-				except:
-					pass
+	for sentence in phrase_list:
+		for aWord in wordsInPhrase:
+			try:
+				wordVector=model1[aWord]
+				vectorSet.append(wordVector)
+			except:
+				pass
 	return ConvertVectorSetToVecAverageBased(vectorSet)
 
 
