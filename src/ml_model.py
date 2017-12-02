@@ -29,7 +29,7 @@ def PhraseToVec(phrase_list):
 				wordVector=model1[aWord]
 				vectorSet.append(wordVector)
 			except:
-				print("MISS!")
+				print("MISS!", aWord)
 				pass
 	return ConvertVectorSetToVecAverageBased(vectorSet)
 
