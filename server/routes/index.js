@@ -58,7 +58,7 @@ router.post('/check', function(req, res, next) {
     mode: 'text',
     pythonOptions: ['-u'],
     scriptPath: pathToMatthew,
-    args: ['input.json']
+    args: [pathToMatthew + 'input.json']
   };
 
   PythonShell.run('ml_model.py', options, function (err, results) {
