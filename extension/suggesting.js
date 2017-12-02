@@ -19,16 +19,21 @@ var getBias = function() {
     return $(element).html();
   });
 
+  var fullStringContent = allContent.join(" ").replace(/<[^<>]*>/g, " ").replace(/[^a-zA-Z. ]/g, ' ');
+
+  console.log(fullStringContent);
+
   $.ajax({
-    url: "http://172.26.11.90:3000/bias",
+    url: "https://fake.kevinnam.me/bias",
     method: "POST",
-    dataType : "json",
-    contentType: "application/json; charset=utf-8",
     data : {
-      content: allContent.join(" ").replace(/<[^<>]*>/g, " ").replace(/[^a-zA-Z. ]/g, ' ')
+      content: fullStringContent
     }
   }).done(function(data) {
     console.log('bias', data);
+    if (data.isBias) {
+      alert('Warning. This article may be bias!');
+    }
   });
 };
 
