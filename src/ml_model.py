@@ -200,8 +200,8 @@ def calculate_similarity(target_builder, cluster_builder, target_highlights):
 
 	return [], -1
 
-def write_json(highlights):
-	obj = {"payload": highlights}
+def write_json(highlights, high_confidence):
+	obj = {"payload": highlights, "confidence": high_confidence}
 
 	with open("output.json", 'w') as f:
 		line = json.dump(obj, f)
@@ -213,27 +213,32 @@ def parse_json(filename):
 
 	return [json_obj['target']], json_obj['cluster_list']
 
-def main(args):
+def main():
+	running = "run"
 
-	target_article, cluster_list = parse_json(args.filename) 
-	
-	words_sent, bigram_sent, trigram_sent, sent_list, gram_probs = preprocess(target_article)
-	sent_probs = score_sentences(words_sent, bigram_sent, trigram_sent, sent_list, gram_probs)
-	target_highlights, target_builder = get_highlight_sentences(sent_list, words_sent, sent_probs)
+	while True:
 
-	words_sent, bigram_sent, trigram_sent, sent_list, gram_probs = preprocess(cluster_list)
-	sent_probs = score_sentences(words_sent, bigram_sent, trigram_sent, sent_list, gram_probs)
-	cluster_highlights, cluster_builder = get_highlight_sentences(sent_list, words_sent, sent_probs)
+		running = input()
 
-	highlights, high_confidence = calculate_similarity(target_builder, cluster_builder, target_highlights)
-	print(highlights)
-	print(high_confidence)
-	# write_json(highlights)
+		if running == "exit":
+			return
+
+		target_article, cluster_list = parse_json("./input.json") 
+		
+		words_sent, bigram_sent, trigram_sent, sent_list, gram_probs = preprocess(target_article)
+		sent_probs = score_sentences(words_sent, bigram_sent, trigram_sent, sent_list, gram_probs)
+		target_highlights, target_builder = get_highlight_sentences(sent_list, words_sent, sent_probs)
+
+		words_sent, bigram_sent, trigram_sent, sent_list, gram_probs = preprocess(cluster_list)
+		sent_probs = score_sentences(words_sent, bigram_sent, trigram_sent, sent_list, gram_probs)
+		cluster_highlights, cluster_builder = get_highlight_sentences(sent_list, words_sent, sent_probs)
+
+		highlights, high_confidence = calculate_similarity(target_builder, cluster_builder, target_highlights)
+		write_json(highlights, high_confidence)
+		print(highlights)
+		print(high_confidence)
 
 
 
 if __name__ == '__main__':
-	parser = argparse.ArgumentParser(description="Let's find some fake news!")
-	parser.add_argument("filename")
-	args = parser.parse_args()
-	main(args)
+	main()
