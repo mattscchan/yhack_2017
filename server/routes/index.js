@@ -74,7 +74,7 @@ router.post('/check', function(req, res, next) {
       console.log('output.json:', output);
       res.send({
         status: 'success',
-        output: JSON.parse(output)
+        output: output
       });
     }
   });
