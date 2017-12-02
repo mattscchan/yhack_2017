@@ -121,12 +121,12 @@ def parse_json(filename):
 	return json_obj['target'], json_obj['cluster_list']
 
 def main(args):
-	# target_article, cluster_list = parse_json(args.filename) 
-	with open('test.txt', 'r') as f:
-		words_sent, bigram_sent, trigram_sent, sent_list, gram_probs = preprocess([f.read()])
-		sent_probs = score_sentences(words_sent, bigram_sent, trigram_sent, sent_list, gram_probs)
-		highlights = get_highlight_sentences(sent_list, sent_probs)
-		write_json(highlights)
+	target_article, cluster_list = parse_json(args.filename) 
+	
+	words_sent, bigram_sent, trigram_sent, sent_list, gram_probs = preprocess([target_article])
+	sent_probs = score_sentences(words_sent, bigram_sent, trigram_sent, sent_list, gram_probs)
+	highlights = get_highlight_sentences(sent_list, sent_probs)
+	write_json(highlights)
 
 
 
