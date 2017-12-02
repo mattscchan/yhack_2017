@@ -10,7 +10,11 @@ function getTitle(){
     var title = $("title").html();
     var reputableArticles = [];
     var reputableURL = [];
-    
+    var targetArticle =  $.map($("p"), function(element){
+        return $(element).html();
+    });
+    targetArticle = targetArticle.join(" ").replace(/<[^<>]*>/g, " ").replace(/[^a-zA-Z. ]/g, ' ')
+
       var parsedQuery = title.split(" ").join("+").replace(/<[^<>]*>/g, "").replace(/[|-]/g, '');
       console.log(parsedQuery);
     
@@ -36,15 +40,26 @@ function getTitle(){
                 var allContent = $.map($("p", datum), function(element){
                     return $(element).html();
                 });
-                console.log(allContent);
                 stringAllContent = allContent.join(" ").replace(/<[^<>]*>/g, " ").replace(/[^a-zA-Z. ]/g, ' ');
                 clusterRaw.push(stringAllContent);
-                //console.log(clusterRaw);
                 
                 
             }).always(function(){
+                var motherPayload = {"target": targetArticle, "cluster": clusterRaw};
                 if (counter++ === data.value.length-1)  {
-                    console.log(clusterRaw);
+                    $.ajax({
+                        url: "https://fake.kevinnam.me/check",
+                        method: "POST",
+                        dataType : "json",
+                        contentType: "application/json; charset=utf-8",
+                        data : JSON.stringify(motherPayload),
+                      }).done(function(data) {
+                          console.log(data);
+                        //https://fake.kevinnam.me/check
+                        
+                      });
+                    // console.log(clusterRaw);
+                    // console.log(targetArticle);
                 }         
             });
             //reputableURL.push(article.url);
@@ -58,19 +73,8 @@ function getTitle(){
             console.log(data);
         })
       });
-      var data = {"target":"John Doe",
-                  "cluster":""}
       
 
-      $.ajax({
-        url: "https://api.cognitive.microsoft.com/bing/v7.0/news/search",
-        method: "POST",
-        dataType : "json",
-        contentType: "application/json; charset=utf-8",
-        data : JSON.stringify(data),
-      }).done(function(data) {
-        
-      });
 
       
 
