@@ -11,7 +11,7 @@
       "matches": [
         "<all_urls>"
       ],
-      "js": ["jquery.js", "censoring.js", "suggesting.js"]
+      "js": ["jquery.js", "jquery-ui.min.js", "censoring.js", "suggesting.js"]
     }
   ]
 }
