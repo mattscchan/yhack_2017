@@ -2,53 +2,84 @@ var express = require('express');
 var router = express.Router();
 var request = require('request');
 var PythonShell = require('python-shell');
+var fs = require('fs');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
-router.post('/check/', function(req, res, next) {
+router.post('/bias', function(req, res, next) {
+  var content = req.body.content;
+  console.log(content);
+  var options = {
+    method: "POST",
+    url: 'https://language.googleapis.com/v1/documents:analyzeSentiment?key=AIzaSyAFFJOT6JFOIbd6mAVdfREyZ3pVEPtjQRI',
+    gzip: true,
+    json: {
+      "encodingType": "UTF8",
+      "document": {
+        "type": "PLAIN_TEXT",
+        "content": content
+      }
+    }
+  };
+
+  request(options, function(error, response, body) {
+    if (response.body) {
+      console.log(response.body);
+      var sentimentScore = response.body.documentSentiment.score;
+      res.send({
+        score: sentimentScore,
+        isBias: Math.abs(sentimentScore) > 0.4
+      })
+
+    } else {
+      return {
+        score: 123456789,
+        isBias: false
+      }
+    }
+
+  });
+
+});
+
+router.post('/check', function(req, res, next) {
   var target = req.body.target;
   var cluster = req.body.cluster;
 
-  // var parsedQuery = title.split(" ").join("+").replace(/<[^<>]*>/g, "");
-  //
-  // var options = {
-  //   method: "GET",
-  //   url: 'https://api.cognitive.microsoft.com/bing/v7.0/news/search',
-  //   gzip: true,
-  //   headers: {
-  //     "Ocp-Apim-Subscription-Key": "c87d294a9c8e4effb43d6a3d0ef9859b"
-  //   },
-  //   qs: {
-  //     "q": parsedQuery,
-  //     "mkt": "en-us"
-  //   }
-  // };
-  //
-  // request(options, function(error, response, body) {
-  //   if (response.body) {
-  //     response.body.value
-  //   }
-  //
-  // });
+  var pathToMatthew = __dirname + '/../src/';
+  fs.writeFile(pathToMatthew + 'input.json', JSON.stringify(req.body), 'utf8', function (err) {
+    if (err) {
+      return console.log(err);
+    }
+    console.log("The file was saved!");
+  });
 
   var options = {
     mode: 'text',
-    pythonPath: 'path/to/python',
     pythonOptions: ['-u'],
-    scriptPath: 'path/to/my/scripts',
-    args: ['value1', 'value2', 'value3']
+    scriptPath: pathToMatthew,
+    args: ['input.json']
   };
 
-  PythonShell.run('my_script.py', options, function (err, results) {
-    if (err) throw err;
+  PythonShell.run('ml_model.py', options, function (err, results) {
+    if (err) {
+      res.send({
+        status: 'failed'
+      })
+    }
+
     // results is an array consisting of messages collected during execution
-    console.log('results: %j', results);
+    var output = require(pathToMatthew + 'output.json');
+    console.log('results:', results);
+    console.log('output.json:', output);
+    res.send({
+      status: 'success',
+      output: JSON.parse(output)
+    });
   });
-
-
 });
 
 router.get('/alive', function(req, res, next) {
