@@ -7,6 +7,7 @@ from nltk import trigrams, bigrams
 from collections import Counter
 from nltk.corpus import stopwords as StopWords
 import numpy as np
+from gensim.models import word2vec
 
 
 class StemTokenizer(object):
@@ -107,6 +108,8 @@ def get_highlight_sentences(sent_list, sent_probs, min_num=2, percent=0.2):
 
 	return highlights
 
+def 
+
 def write_json(highlights):
 	obj = {"payload": highlights}
 
@@ -118,14 +121,21 @@ def parse_json(filename):
 	with open(filename, 'r') as f:
 		json_obj = json.load(f)
 
-	return json_obj['target'], json_obj['cluster_list']
+	return [json_obj['target']], json_obj['cluster_list']
 
 def main(args):
 	target_article, cluster_list = parse_json(args.filename) 
 	
-	words_sent, bigram_sent, trigram_sent, sent_list, gram_probs = preprocess([target_article])
+	words_sent, bigram_sent, trigram_sent, sent_list, gram_probs = preprocess(target_article)
 	sent_probs = score_sentences(words_sent, bigram_sent, trigram_sent, sent_list, gram_probs)
-	highlights = get_highlight_sentences(sent_list, sent_probs)
+	target_highlights = get_highlight_sentences(sent_list, sent_probs)
+
+	words_sent, bigram_sent, trigram_sent, sent_list, gram_probs = preprocess(cluster_list)
+	sent_probs = score_sentences(words_sent, bigram_sent, trigram_sent, sent_list, gram_probs)
+	cluster_highlights = get_highlight_sentences(sent_list, sent_probs)
+
+
+
 	write_json(highlights)
 
 
