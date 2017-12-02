@@ -14,7 +14,7 @@ pathToBinVectors = '../../GoogleNews-vectors-negative300.bin'
 print ("Loading the data file... Please wait...")
 model1 = KeyedVectors.load_word2vec_format(pathToBinVectors, binary=True)
 print ("Successfully loaded 3.6 G bin file!")
-	
+
 def ConvertVectorSetToVecAverageBased(vectorSet, ignore = []):
 	if len(ignore) == 0: 
 		return np.mean(vectorSet, axis = 0)
@@ -191,11 +191,10 @@ def calculate_similarity(target_builder, cluster_builder, target_highlights):
 
 		if cosine_similarity < max_diff:
 			return target_highlights, 1
-
-		if cosine_similarity < average_diff:
+		elif cosine_similarity < average_diff:
 			return target_highlights, 0
 
-		return [], -1
+	return [], -1
 
 def write_json(highlights):
 	obj = {"payload": highlights}
