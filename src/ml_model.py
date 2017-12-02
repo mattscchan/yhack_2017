@@ -133,9 +133,9 @@ def main(args):
 	# sent_probs = score_sentences(words_sent, bigram_sent, trigram_sent, sent_list, gram_probs)
 	# cluster_highlights = get_highlight_sentences(sent_list, sent_probs)
 
-	print "Loading the data file... Please wait..."
+	print ("Loading the data file... Please wait...")
 	model1 = word2vec.Word2Vec.load_word2vec_format(pathToBinVectors, binary=True)
-	print "Successfully loaded 3.6 G bin file!"
+	print ("Successfully loaded 3.6 G bin file!")
 
 	write_json(highlights)
 
