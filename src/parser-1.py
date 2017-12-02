@@ -13,7 +13,7 @@ def main():
 			examples.append(obj)
 
 	with open('/Users/mattchan/Projects/yhack_2017/data/fake_or_real_news.json', 'w') as f2:
-		json.dump(examples, f2)
+		json.dump(examples, f2, ensure_ascii=False)
 
 if __name__ == '__main__':
 	# parser = argparse.ArgumentParser()
