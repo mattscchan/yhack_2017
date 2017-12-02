@@ -9,44 +9,34 @@ from nltk.corpus import stopwords as StopWords
 import numpy as np
 from gensim.models import KeyedVectors
 
-pathToBinVectors = '../../GoogleNews-vectors-negative300.bin'
+# pathToBinVectors = '../../GoogleNews-vectors-negative300.bin'
 
-class PhraseVector:
-	def __init__(self, phrase):
-		self.vector = self.PhraseToVec(phrase)
-	# <summary> Calculates similarity between two sets of vectors based on the averages of the sets.</summary>
-	# <param>name = "vectorSet" description = "An array of arrays that needs to be condensed into a single array (vector). In this class, used to convert word vecs to phrases."</param>
-	# <param>name = "ignore" description = "The vectors within the set that need to be ignored. If this is an empty list, nothing is ignored. In this class, this would be stop words."</param>
-	# <returns> The condensed single vector that has the same dimensionality as the other vectors within the vecotSet.</returns>
-	def ConvertVectorSetToVecAverageBased(self, vectorSet, ignore = []):
-		if len(ignore) == 0: 
-			return np.mean(vectorSet, axis = 0)
-		else: 
-			return np.dot(np.transpose(vectorSet),ignore)/sum(ignore)
+def ConvertVectorSetToVecAverageBased(vectorSet, ignore = []):
+	if len(ignore) == 0: 
+		return np.mean(vectorSet, axis = 0)
+	else: 
+		return np.dot(np.transpose(vectorSet),ignore)/sum(ignore)
 
-	def PhraseToVec(self, phrase):
-		cachedStopWords = stopwords.words("english")
-		phrase = phrase.lower()
-		wordsInPhrase = [word for word in phrase.split() if word not in cachedStopWords]
-		vectorSet = []
+def PhraseToVec(phrase_list):
+	vectorSet = []
+	for sentence in phrase_list
 		for aWord in wordsInPhrase:
 			try:
 				wordVector=model1[aWord]
 				vectorSet.append(wordVector)
 			except:
 				pass
-		return self.ConvertVectorSetToVecAverageBased(vectorSet)
+	return ConvertVectorSetToVecAverageBased(vectorSet)
 
-	# <summary> Calculates Cosine similarity between two phrase vectors.</summary>
-	# <param> name = "otherPhraseVec" description = "The other vector relative to which similarity is to be calculated."</param>
-	def CosineSimilarity(self, otherPhraseVec):
-		cosine_similarity = np.dot(self.vector, otherPhraseVec) / (np.linalg.norm(self.vector) * np.linalg.norm(otherPhraseVec))
-		try:
-			if math.isnan(cosine_similarity):
-				cosine_similarity=0
-		except:
-			cosine_similarity=0		
-		return cosine_similarity
+
+def CosineSimilarity(vector1, vector2):
+	cosine_similarity = np.dot(vector1, vector2) / (np.linalg.norm(vector1) * np.linalg.norm(vector2))
+	try:
+		if math.isnan(cosine_similarity):
+			cosine_similarity=0
+	except:
+		cosine_similarity=0		
+	return cosine_similarity
 
 class StemTokenizer(object):
      def __init__(self):
@@ -129,37 +119,79 @@ def score_sentences(all_words, all_bigrams, all_trigrams, all_sent, gram_probs):
 		for i in range(0, len(all_sent[file])):
 			total_prob = 0
 			feature_num = 0
-			for j in range(0, len(words_sent[file][i])):
-				total_prob += gram_probs[words_sent[file][i][j]]
+			for j in range(0, len(all_words[file][i])):
+				total_prob += gram_probs[all_words[file][i][j]]
 				feature_num += 1
-			for j in range(0, len(bigram_sent[i])):
-				total_prob += gram_probs[bigram_sent[file][i][j]]
+			for j in range(0, len(all_bigrams[file][i])):
+				total_prob += gram_probs[all_bigrams[file][i][j]]
 				feature_num += 1
-			for j in range(0, len(trigram_sent[i])):
-				total_prob += gram_probs[trigram_sent[file][i][j]]
+			for j in range(0, len(all_trigrams[file][i])):
+				total_prob += gram_probs[all_trigrams[file][i][j]]
 				feature_num += 1
 			sent_probs.append(total_prob/feature_num)
 		all_probs.append(sent_probs)
 
 	return all_probs
 
-def get_highlight_sentences(sent_list, sent_probs, min_num=2, percent=0.2):
-	sentence_num = (int)(len(sent_list)*0.2)
+def get_highlight_sentences(all_sent, all_words, all_probs, min_num=2, percent=0.2):
 	highlights = []
+	vector_words = []
 
-	if min_num > sentence_num:
-		sentence_num = min_num
+	for file in range(0, len(all_sent)):
+		sentence_num = (int)(len(all_sent[file])*0.2)
+		per_file_highlights = []
+		per_file_words = []
 
-	for i in range(0, sentence_num):
-		max_index = np.argmax(sent_probs)
-		highlights.append(sent_list[max_index]) 
-		sent_probs[max_index] = 0
+		if min_num > sentence_num:
+			sentence_num = min_num
 
-	return highlights
+		if sentence_num > len(all_sent[file]):
+			sentence_num = len(all_sent[file])
 
-def calculate_similarity(target_highlights, cluster_highlights):
+		for i in range(0, sentence_num):
+			max_index = np.argmax(all_probs[file][i])
+			per_file_highlights.append(all_sent[file][max_index]) 
+			per_file_words.append(all_words[file][max_index])
+			all_probs[file][max_index] = 0
 
-	for article in cluster_highlights
+		highlights.append(per_file_highlights)
+		vector_words.append(per_file_words)
+
+	return highlights, vector_words
+
+def calculate_similarity(target_builder, cluster_builder, target_highlights):
+	vec_scores = []
+	max_diff = 100000000
+	average_diff = 0
+	target_vec = 0
+
+	# populate all the mean scores now find the biggest diff and use as the baseline
+	for file in cluster_builder:
+		vec = PhraseToVec(file)
+		vec_scores.append(vec)
+
+	for i in range(0, len(cluster_builder)):
+		for j in range(i+1, len(cluster_builder)):
+			cosine_similarity = CosineSimilarity(vec_scores[i], vec_scores[j])
+			average_diff += cosine_similarity
+			
+			if cosine_similarity < max_diff:
+				max_diff = cosine_similarity
+
+
+	for file in target_builder:
+		target_vec = PhraseToVec(file)
+
+	for i in range(0, len(cluster_builder))
+		cosine_similarity = CosineSimilarity(vec_scores[i], target_vec)
+
+		if cosine_similarity < max_diff:
+			return target_highlights, 1
+
+		if cosine_similarity < average_diff:
+			return target_highlights, 0
+
+		return [], -1
 
 def write_json(highlights):
 	obj = {"payload": highlights}
@@ -183,13 +215,13 @@ def main(args):
 	
 	words_sent, bigram_sent, trigram_sent, sent_list, gram_probs = preprocess(target_article)
 	sent_probs = score_sentences(words_sent, bigram_sent, trigram_sent, sent_list, gram_probs)
-	target_highlights = get_highlight_sentences(sent_list, sent_probs)
+	target_highlights, target_builder = get_highlight_sentences(sent_list, words_sent, sent_probs)
 
 	words_sent, bigram_sent, trigram_sent, sent_list, gram_probs = preprocess(cluster_list)
 	sent_probs = score_sentences(words_sent, bigram_sent, trigram_sent, sent_list, gram_probs)
-	cluster_highlights = get_highlight_sentences(sent_list, sent_probs)
+	cluster_highlights, cluster_builder = get_highlight_sentences(sent_list, words_sent, sent_probs)
 
-	highlights, high_confidence = calculate_similarity(target_highlights, cluster_highlights)
+	highlights, high_confidence = calculate_similarity(target_builder, cluster_builder, target_highlights)
 
 	write_json(highlights)
 
