@@ -8,7 +8,29 @@ $(document).ready(function() {
   var title = $('h1.headline a').html();
   console.log(title);
   highlightAndSuggest(title);
+  getBias();
 });
+
+var getBias = function() {
+
+
+  console.log('getting bias...');
+  var allContent = $.map($("p"), function(element){
+    return $(element).html();
+  });
+
+  $.ajax({
+    url: "http://172.26.11.90:3000/bias",
+    method: "POST",
+    dataType : "json",
+    contentType: "application/json; charset=utf-8",
+    data : {
+      content: allContent.join(" ").replace(/<[^<>]*>/g, " ").replace(/[^a-zA-Z. ]/g, ' ')
+    }
+  }).done(function(data) {
+    console.log('bias', data);
+  });
+};
 
 var highlightYellow = function(string, index) {
   var replaced = $("body").html().replace(string, '<span style="background-color: yellow;" title="tooltip" class="hoverableSuggestableFakeNews-' + index +'">' + string + '</span>');
