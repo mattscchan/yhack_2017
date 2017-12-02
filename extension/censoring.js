@@ -1,5 +1,4 @@
 $(document).ready(function(){
-    console.log("asdasd");
     highlightRed([" introducing special tracks", "Also gluten-free"]);
     console.log(getTitle())
 });
@@ -12,7 +11,7 @@ function getTitle(){
     var reputableArticles = [];
     var reputableURL = [];
     
-      var parsedQuery = title.split(" ").join("+").replace(/<[^<>]*>/g, "");
+      var parsedQuery = title.split(" ").join("+").replace(/<[^<>]*>/g, "").replace(/[|-]/g, '');
       console.log(parsedQuery);
     
       $.ajax({
@@ -27,13 +26,37 @@ function getTitle(){
         }
       }).done(function(data) {
           console.log(data);
+          var clusterRaw = [];
+          var counter = 0;
         data.value.forEach(function(article) {
-            reputableURL.push(article.url);
+           // console.log(article.url);
+            $.get(article.url, function(datum) {
+                //var data = $(data);
+                //console.log($("p", datum).html());
+                var allContent = $.map($("p", datum), function(element){
+                    return $(element).html();
+                });
+                console.log(allContent);
+                stringAllContent = allContent.join(" ").replace(/<[^<>]*>/g, " ").replace(/[^a-zA-Z. ]/g, ' ');
+                clusterRaw.push(stringAllContent);
+                //console.log(clusterRaw);
+                
+                
+            }).always(function(){
+                if (counter++ === data.value.length-1)  {
+                    console.log(clusterRaw);
+                }         
+            });
+            //reputableURL.push(article.url);
         });
+
       });
 
-      reputableURL.forEach(function(){
-
+      reputableURL.forEach(function(url){
+        $.get(url, function(data){
+            //var data = $(data);
+            console.log(data);
+        })
       });
       var data = {"target":"John Doe",
                   "cluster":""}

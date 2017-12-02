@@ -9,7 +9,7 @@
   "content_scripts": [
     {
       "matches": [
-        "https://politics.theonion.com/*"
+        "https://politics.theonion.com/*","<all_urls>"
       ],
       "css": ["jquery-ui.min.css"],
       "js": ["jquery.js", "jquery-ui.min.js", "censoring.js", "suggesting.js"]
