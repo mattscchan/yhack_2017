@@ -46,9 +46,6 @@ router.post('/bias', function(req, res, next) {
 });
 
 router.post('/check', function(req, res, next) {
-  var target = req.body.target;
-  var cluster = req.body.cluster;
-
   var pathToMatthew = __dirname + '/../../src/';
   fs.writeFile(pathToMatthew + 'input.json', JSON.stringify(req.body), 'utf8', function (err) {
     if (err) {
@@ -67,7 +64,8 @@ router.post('/check', function(req, res, next) {
   PythonShell.run('ml_model.py', options, function (err, results) {
     if (err) {
       res.send({
-        status: 'failed'
+        status: 'failed',
+        error: err
       })
     } else {
       // results is an array consisting of messages collected during execution
