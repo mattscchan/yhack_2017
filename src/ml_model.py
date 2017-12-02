@@ -186,8 +186,11 @@ def calculate_similarity(target_builder, cluster_builder, target_highlights):
 	for file in target_builder:
 		target_vec = PhraseToVec(file)
 
+	print(max_diff)
+	print(average_diff)
 	for i in range(0, len(cluster_builder)):
 		cosine_similarity = CosineSimilarity(vec_scores[i], target_vec)
+		print(cosine_similarity)
 
 		if cosine_similarity < max_diff:
 			return target_highlights, 1
