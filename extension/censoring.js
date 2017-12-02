@@ -31,9 +31,11 @@ function getTitle(){
       }).done(function(data) {
           console.log(data);
           var clusterRaw = [];
+          var clusterLinks = [];
           var counter = 0;
         data.value.forEach(function(article) {
            // console.log(article.url);
+           clusterLinks.push(article.url)
             $.get(article.url, function(datum) {
                 //var data = $(data);
                 //console.log($("p", datum).html());
@@ -42,6 +44,7 @@ function getTitle(){
                 });
                 stringAllContent = allContent.join(" ").replace(/<[^<>]*>/g, " ").replace(/[^a-zA-Z. ]/g, ' ');
                 clusterRaw.push(stringAllContent);
+                
                 
                 
             }).always(function(){
@@ -58,6 +61,7 @@ function getTitle(){
                         //https://fake.kevinnam.me/check
                         
                       });
+                      console.log(clusterLinks);
                     // console.log(clusterRaw);
                     // console.log(targetArticle);
                 }         
