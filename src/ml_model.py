@@ -7,7 +7,7 @@ from nltk import trigrams, bigrams
 from collections import Counter
 from nltk.corpus import stopwords as StopWords
 import numpy as np
-from gensim.models import word2vec
+from gensim.models import KeyedVectors
 
 pathToBinVectors = '../../GoogleNews-vectors-negative300.bin'
 
@@ -134,7 +134,7 @@ def main(args):
 	# cluster_highlights = get_highlight_sentences(sent_list, sent_probs)
 
 	print ("Loading the data file... Please wait...")
-	model1 = word2vec.Word2Vec.load_word2vec_format(pathToBinVectors, binary=True)
+	model1 = KeyedVectors.load_word2vec_format(pathToBinVectors, binary=True)
 	print ("Successfully loaded 3.6 G bin file!")
 
 	write_json(highlights)
