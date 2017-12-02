@@ -11,6 +11,10 @@ from gensim.models import KeyedVectors
 
 pathToBinVectors = '../../GoogleNews-vectors-negative300.bin'
 
+print ("Loading the data file... Please wait...")
+model1 = KeyedVectors.load_word2vec_format(pathToBinVectors, binary=True)
+print ("Successfully loaded 3.6 G bin file!")
+	
 def ConvertVectorSetToVecAverageBased(vectorSet, ignore = []):
 	if len(ignore) == 0: 
 		return np.mean(vectorSet, axis = 0)
@@ -20,7 +24,7 @@ def ConvertVectorSetToVecAverageBased(vectorSet, ignore = []):
 def PhraseToVec(phrase_list):
 	vectorSet = []
 	for sentence in phrase_list:
-		for aWord in wordsInPhrase:
+		for aWord in sentence:
 			try:
 				wordVector=model1[aWord]
 				vectorSet.append(wordVector)
@@ -207,9 +211,6 @@ def parse_json(filename):
 	return [json_obj['target']], json_obj['cluster_list']
 
 def main(args):
-	print ("Loading the data file... Please wait...")
-	model1 = KeyedVectors.load_word2vec_format(pathToBinVectors, binary=True)
-	print ("Successfully loaded 3.6 G bin file!")
 
 	target_article, cluster_list = parse_json(args.filename) 
 	
