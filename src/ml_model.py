@@ -174,7 +174,7 @@ def calculate_similarity(target_builder, cluster_builder, target_highlights):
 		for j in range(i+1, len(cluster_builder)):
 			cosine_similarity = CosineSimilarity(vec_scores[i], vec_scores[j])
 			average_diff += cosine_similarity
-			
+
 			if cosine_similarity < max_diff:
 				max_diff = cosine_similarity
 
@@ -222,8 +222,9 @@ def main(args):
 	cluster_highlights, cluster_builder = get_highlight_sentences(sent_list, words_sent, sent_probs)
 
 	highlights, high_confidence = calculate_similarity(target_builder, cluster_builder, target_highlights)
-
-	write_json(highlights)
+	print(highlights)
+	print(high_confidence)
+	# write_json(highlights)
 
 
 
