@@ -16,8 +16,6 @@ router.post('/check', function(req, res, next) {
     pythonPath: '/usr/bin/python3'
   };
 
-  var pyshell = new PythonShell('ml_model.py', options);
-
   fs.writeFile(pathToMatthew + 'input.json', JSON.stringify(req.body), 'utf8', function (err) {
     if (err) {
       console.log('error writing file', err);
@@ -26,20 +24,8 @@ router.post('/check', function(req, res, next) {
         output: err
       });
     } else {
-      // sends a message to the Python script via stdin
-      pyshell.send(pathToMatthew + 'input.json');
 
-      pyshell.on('message', function (message) {
-        var output = require(pathToMatthew + '../output.json');
-        console.log('results:', message);
-        console.log('output.json:', output);
-        res.send({
-          status: 'success',
-          output: output
-        });
-      });
-
-      pyshell.end(function(err) {
+      PythonShell.run('ml_model.py', options, function (err, results) {
         if (err) {
           console.log('error!', err);
           res.send({
@@ -49,6 +35,14 @@ router.post('/check', function(req, res, next) {
               confidence: -1
             }
           })
+        } else {
+          var output = require(pathToMatthew + '../output.json');
+          console.log('results:', message);
+          console.log('output.json:', output);
+          res.send({
+            status: 'success',
+            output: output
+          });
         }
       });
     }
