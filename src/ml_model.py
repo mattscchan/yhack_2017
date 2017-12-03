@@ -150,6 +150,10 @@ def get_highlight_sentences(all_sent, all_words, all_probs, min_num=2, percent=0
 		if sentence_num > len(all_sent[file]):
 			sentence_num = len(all_sent[file])
 
+		# safety check
+		if all_words[file] == [] or all_bigrams[file]:
+			continue
+
 		for i in range(0, sentence_num):
 			max_index = np.argmax(all_probs[file][i])
 			per_file_highlights.append(all_sent[file][max_index]) 
