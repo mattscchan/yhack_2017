@@ -192,7 +192,7 @@ def calculate_similarity(target_builder, cluster_builder, target_highlights):
 
 	for i in range(0, len(cluster_builder)):
 		cosine_similarity = CosineSimilarity(vec_scores[i], target_vec)
-
+		print("cosine similarity", cosine_similarity)
 		if cosine_similarity < max_diff:
 			return target_highlights, 1
 		elif cosine_similarity < average_diff:
@@ -202,6 +202,9 @@ def calculate_similarity(target_builder, cluster_builder, target_highlights):
 
 def write_json(highlights, high_confidence):
 	obj = {"payload": highlights, "confidence": high_confidence}
+
+	print("confidence", obj.confidence)
+	print("payload": obj.payload)
 
 	with open("output.json", 'w') as f:
 		line = json.dump(obj, f)
