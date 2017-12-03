@@ -43,6 +43,7 @@ router.post('/check', function(req, res, next) {
 
       pyshell.end(function(err) {
         if (err) {
+          console.log('error!', err);
           res.send({
             status: 'error',
             output: {
