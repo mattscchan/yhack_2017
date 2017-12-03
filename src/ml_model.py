@@ -9,7 +9,7 @@ from nltk.corpus import stopwords as StopWords
 import numpy as np
 from gensim.models import KeyedVectors
 
-pathToBinVectors = '/home/mattchan/yhacks_2017/GoogleNews-vectors-negative300.bin'
+pathToBinVectors = '~/GoogleNews-vectors-negative300.bin'
 
 # print ("Loading the data file... Please wait...")
 model1 = KeyedVectors.load_word2vec_format(pathToBinVectors, binary=True)
@@ -214,26 +214,26 @@ def parse_json(filename):
 def main():
 	running = "run"
 
-	while True:
+	# while True:
 
-		running = input()
+	# 	running = input()
 
-		if running == "exit":
-			return
+	# 	if running == "exit":
+	# 		return
 
-		target_article, cluster_list = parse_json("/home/mattchan/yhacks_2017/yhack_2017/src/input.json") 
-		
-		words_sent, bigram_sent, trigram_sent, sent_list, gram_probs = preprocess(target_article)
-		sent_probs = score_sentences(words_sent, bigram_sent, trigram_sent, sent_list, gram_probs)
-		target_highlights, target_builder = get_highlight_sentences(sent_list, words_sent, sent_probs)
+	target_article, cluster_list = parse_json("/home/mattchan/yhacks_2017/yhack_2017/src/input.json") 
+	
+	words_sent, bigram_sent, trigram_sent, sent_list, gram_probs = preprocess(target_article)
+	sent_probs = score_sentences(words_sent, bigram_sent, trigram_sent, sent_list, gram_probs)
+	target_highlights, target_builder = get_highlight_sentences(sent_list, words_sent, sent_probs)
 
-		words_sent, bigram_sent, trigram_sent, sent_list, gram_probs = preprocess(cluster_list)
-		sent_probs = score_sentences(words_sent, bigram_sent, trigram_sent, sent_list, gram_probs)
-		cluster_highlights, cluster_builder = get_highlight_sentences(sent_list, words_sent, sent_probs)
+	words_sent, bigram_sent, trigram_sent, sent_list, gram_probs = preprocess(cluster_list)
+	sent_probs = score_sentences(words_sent, bigram_sent, trigram_sent, sent_list, gram_probs)
+	cluster_highlights, cluster_builder = get_highlight_sentences(sent_list, words_sent, sent_probs)
 
-		highlights, high_confidence = calculate_similarity(target_builder, cluster_builder, target_highlights)
-		write_json(highlights, high_confidence)
-		print("DONE!")
+	highlights, high_confidence = calculate_similarity(target_builder, cluster_builder, target_highlights)
+	write_json(highlights, high_confidence)
+	print("DONE!")
 
 
 
