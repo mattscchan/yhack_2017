@@ -209,7 +209,7 @@ def parse_json(filename):
 	with open(filename, 'r') as f:
 		json_obj = json.load(f)
 
-	return [json_obj['target']], json_obj['cluster_list']
+	return [json_obj['target']], json_obj['cluster']
 
 def main():
 	running = "run"
