@@ -3,6 +3,7 @@ var router = express.Router();
 var request = require('request');
 var PythonShell = require('python-shell');
 var fs = require('fs');
+var pyshell = new PythonShell('ml_model.py', options);
 
 router.post('/check', function(req, res, next) {
   var pathToMatthew = __dirname + '/../../src/';
@@ -20,8 +21,6 @@ router.post('/check', function(req, res, next) {
     args: [pathToMatthew + 'input.json'],
     pythonPath: '/usr/bin/python3'
   };
-
-  var pyshell = new PythonShell('ml_model.py', options);
 
   // sends a message to the Python script via stdin
   pyshell.send(pathToMatthew + 'input.json');
