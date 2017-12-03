@@ -204,7 +204,7 @@ def write_json(highlights, high_confidence):
 	obj = {"payload": highlights, "confidence": high_confidence}
 
 	print("confidence", obj.confidence)
-	print("payload": obj.payload)
+	print("payload", obj.payload)
 
 	with open("output.json", 'w') as f:
 		line = json.dump(obj, f)
