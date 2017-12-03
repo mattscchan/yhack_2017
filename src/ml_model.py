@@ -1,6 +1,6 @@
 import argparse
 import json
-from sklearn.feature_extraction.text import TfidfVectorizer
+# from sklearn.feature_extraction.text import TfidfVectorizer
 from nltk.tokenize import word_tokenize, sent_tokenize          
 from nltk.stem.porter import PorterStemmer
 from nltk import trigrams, bigrams
@@ -9,12 +9,12 @@ from nltk.corpus import stopwords as StopWords
 import numpy as np
 from gensim.models import KeyedVectors
 
-pathToBinVectors = '../../GoogleNews-vectors-negative300.bin'
+pathToBinVectors = '/home/mattchan/yhacks_2017/GoogleNews-vectors-negative300.bin'
 
-print ("Loading the data file... Please wait...")
+# print ("Loading the data file... Please wait...")
 model1 = KeyedVectors.load_word2vec_format(pathToBinVectors, binary=True)
-print ("Successfully loaded 3.6 G bin file!")
-	
+# print ("Successfully loaded 3.6 G bin file!")
+
 def ConvertVectorSetToVecAverageBased(vectorSet, ignore = []):
 	if len(ignore) == 0: 
 		return np.mean(vectorSet, axis = 0)
@@ -29,6 +29,7 @@ def PhraseToVec(phrase_list):
 				wordVector=model1[aWord]
 				vectorSet.append(wordVector)
 			except:
+				# print("MISS!", aWord)
 				pass
 	return ConvertVectorSetToVecAverageBased(vectorSet)
 
@@ -59,10 +60,11 @@ def preprocess(file_list, tf=False, stopwords=False):
 	# don't remove stopwords because probably important when talking about fake news
 	# we can try tf vs simple unigram/bigram count
 	if tf:
-		tf_vectorizer = TfidfVectorizer(analyzer="word",
-										ngram_range=(1,2),
-										tokenizer=StemTokenizer(),
-										string="english")
+		print("HI")
+		# tf_vectorizer = TfidfVectorizer(analyzer="word",
+		# 								ngram_range=(1,2),
+		# 								tokenizer=StemTokenizer(),
+		# 								string="english")
 	else: 
 		stemmer = PorterStemmer()
 		punct = [',', '.', '"']
@@ -191,14 +193,13 @@ def calculate_similarity(target_builder, cluster_builder, target_highlights):
 
 		if cosine_similarity < max_diff:
 			return target_highlights, 1
-
-		if cosine_similarity < average_diff:
+		elif cosine_similarity < average_diff:
 			return target_highlights, 0
 
-		return [], -1
+	return [], -1
 
-def write_json(highlights):
-	obj = {"payload": highlights}
+def write_json(highlights, high_confidence):
+	obj = {"payload": highlights, "confidence": high_confidence}
 
 	with open("output.json", 'w') as f:
 		line = json.dump(obj, f)
@@ -208,29 +209,33 @@ def parse_json(filename):
 	with open(filename, 'r') as f:
 		json_obj = json.load(f)
 
-	return [json_obj['target']], json_obj['cluster_list']
+	return [json_obj['target']], json_obj['cluster']
 
-def main(args):
+def main():
+	running = "run"
 
-	target_article, cluster_list = parse_json(args.filename) 
-	
-	words_sent, bigram_sent, trigram_sent, sent_list, gram_probs = preprocess(target_article)
-	sent_probs = score_sentences(words_sent, bigram_sent, trigram_sent, sent_list, gram_probs)
-	target_highlights, target_builder = get_highlight_sentences(sent_list, words_sent, sent_probs)
+	while True:
 
-	words_sent, bigram_sent, trigram_sent, sent_list, gram_probs = preprocess(cluster_list)
-	sent_probs = score_sentences(words_sent, bigram_sent, trigram_sent, sent_list, gram_probs)
-	cluster_highlights, cluster_builder = get_highlight_sentences(sent_list, words_sent, sent_probs)
+		running = input()
 
-	highlights, high_confidence = calculate_similarity(target_builder, cluster_builder, target_highlights)
-	print(highlights)
-	print(high_confidence)
-	# write_json(highlights)
+		if running == "exit":
+			return
+
+		target_article, cluster_list = parse_json("/home/mattchan/yhacks_2017/yhack_2017/src/input.json") 
+		
+		words_sent, bigram_sent, trigram_sent, sent_list, gram_probs = preprocess(target_article)
+		sent_probs = score_sentences(words_sent, bigram_sent, trigram_sent, sent_list, gram_probs)
+		target_highlights, target_builder = get_highlight_sentences(sent_list, words_sent, sent_probs)
+
+		words_sent, bigram_sent, trigram_sent, sent_list, gram_probs = preprocess(cluster_list)
+		sent_probs = score_sentences(words_sent, bigram_sent, trigram_sent, sent_list, gram_probs)
+		cluster_highlights, cluster_builder = get_highlight_sentences(sent_list, words_sent, sent_probs)
+
+		highlights, high_confidence = calculate_similarity(target_builder, cluster_builder, target_highlights)
+		write_json(highlights, high_confidence)
+		print("DONE!")
 
 
 
 if __name__ == '__main__':
-	parser = argparse.ArgumentParser(description="Let's find some fake news!")
-	parser.add_argument("filename")
-	args = parser.parse_args()
-	main(args)
+	main()
