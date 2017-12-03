@@ -34,6 +34,15 @@ router.post('/check', function(req, res, next) {
       output: output
     });
   });
+
+  pyshell.end(function (err) {
+    if (err) {
+      res.send({
+        status: 'error',
+        output: error
+      });
+    }
+  });
 });
 
 router.get('/alive', function(req, res, next) {
