@@ -37,7 +37,6 @@ router.post('/check', function(req, res, next) {
           })
         } else {
           var output = require(pathToMatthew + '../output.json');
-          console.log('results:', message);
           console.log('output.json:', output);
           res.send({
             status: 'success',
