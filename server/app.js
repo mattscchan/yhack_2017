@@ -23,6 +23,8 @@ app.use(cookieParser());
 app.use(require('less-middleware')(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
+console.log('server started');
+
 app.use('/', index);
 app.use('/users', users);
 
