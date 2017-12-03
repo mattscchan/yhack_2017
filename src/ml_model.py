@@ -74,6 +74,7 @@ def preprocess(file_list, tf=False, stopwords=False):
 			# split the files into sentences and score the difference of the sentences
 			bigram_sent = []
 			words_sent = []
+			word_list = []
 			sent_list = sent_tokenize(file)
 			all_sent.append(sent_list)
 
