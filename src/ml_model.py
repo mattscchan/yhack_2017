@@ -9,7 +9,7 @@ from nltk.corpus import stopwords as StopWords
 import numpy as np
 from gensim.models import KeyedVectors
 
-pathToBinVectors = 'mnt/ram-disk'
+pathToBinVectors = '/mnt/ram-disk'
 
 # print ("Loading the data file... Please wait...")
 model1 = KeyedVectors.load_word2vec_format(pathToBinVectors, binary=True)
