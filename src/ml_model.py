@@ -192,11 +192,13 @@ def calculate_similarity(target_builder, cluster_builder, target_highlights):
 
 	for i in range(0, len(cluster_builder)):
 		cosine_similarity = CosineSimilarity(vec_scores[i], target_vec)
-		print("cosine similarity", cosine_similarity)
+		# print("cosine similarity", cosine_similarity)
 		if cosine_similarity < max_diff:
 			return target_highlights, 1
 		elif cosine_similarity < average_diff:
 			return target_highlights, 0
+		elif cosine_similarity == 0:
+			return target_highlights, 1
 
 	return [], -1
 
