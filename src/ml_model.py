@@ -121,7 +121,7 @@ def score_sentences(all_words, all_bigrams, all_sent, gram_probs):
 			feature_num = 0
 
 			# safety check
-			if all_words[file] == [] || all_bigrams[file]:
+			if all_words[file] == [] or all_bigrams[file]:
 				continue
 
 			for j in range(0, len(all_words[file][i])):
