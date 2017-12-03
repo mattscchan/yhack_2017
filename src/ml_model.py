@@ -221,7 +221,7 @@ def main():
 		if running == "exit":
 			return
 
-		target_article, cluster_list = parse_json("./input.json") 
+		target_article, cluster_list = parse_json("/home/mattchan/yhacks_2017/yhack_2017/src/input.json") 
 		
 		words_sent, bigram_sent, trigram_sent, sent_list, gram_probs = preprocess(target_article)
 		sent_probs = score_sentences(words_sent, bigram_sent, trigram_sent, sent_list, gram_probs)
