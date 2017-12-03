@@ -62,7 +62,7 @@ router.post('/check', function(req, res, next) {
     if (!error) {
       res.send({
         status: 'success',
-        output: response
+        output: response.body
       });
     } else {
       res.send({
