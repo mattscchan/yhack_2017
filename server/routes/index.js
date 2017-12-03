@@ -57,8 +57,12 @@ router.post('/check', function(req, res, next) {
   };
 
   request(options, function(error, response, body) {
-    if (response.body) {
-      return response.body;
+    console.log(response);
+    console.log(error);
+    if (!error) {
+      return {
+        status: 'success'
+      }
     } else {
       return {
         status: 'error',

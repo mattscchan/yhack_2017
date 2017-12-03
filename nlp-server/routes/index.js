@@ -39,7 +39,7 @@ router.post('/check', function(req, res, next) {
     if (err) {
       res.send({
         status: 'error',
-        output: error
+        output: err
       });
     }
   });
