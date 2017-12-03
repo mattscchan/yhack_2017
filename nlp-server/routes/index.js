@@ -27,12 +27,15 @@ pyshell.on('close', function(error) {
 });
 
 router.post('/check', function(req, res, next) {
+  console.log('got request', req.body);
   fs.writeFile(pathToMatthew + 'input.json', JSON.stringify(req.body), 'utf8', function (err) {
     if (err) {
+      console.log('error writing file', err);
       res.send({
         status: 'error',
         output: err
       });
+      next();
     } else {
       // sends a message to the Python script via stdin
       pyshell.send(pathToMatthew + 'input.json');
@@ -45,13 +48,16 @@ router.post('/check', function(req, res, next) {
           status: 'success',
           output: output
         });
+        next();
       });
 
       pyshell.on('error', function(error) {
+        console.log('got error', error);
         res.send({
           status: 'error',
           output: error
         });
+        next();
       });
     }
   });
