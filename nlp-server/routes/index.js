@@ -17,7 +17,8 @@ router.post('/check', function(req, res, next) {
     mode: 'text',
     pythonOptions: ['-u'],
     scriptPath: pathToMatthew,
-    args: [pathToMatthew + 'input.json']
+    args: [pathToMatthew + 'input.json'],
+    pythonPath: '/usr/bin/python3'
   };
 
   var pyshell = new PythonShell('ml_model.py', options);

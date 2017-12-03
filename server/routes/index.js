@@ -60,14 +60,15 @@ router.post('/check', function(req, res, next) {
     console.log(response);
     console.log(error);
     if (!error) {
-      return {
-        status: 'success'
-      }
+      res.send({
+        status: 'success',
+        output: response
+      });
     } else {
-      return {
+      res.send({
         status: 'error',
         error: error
-      }
+      });
     }
   });
 });
