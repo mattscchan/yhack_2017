@@ -18,6 +18,10 @@ pyshell.on('message', function(message) {
   console.log(message);
 });
 
+pyshell.on('error', function(error) {
+  console.log(error);
+});
+
 router.post('/check', function(req, res, next) {
   fs.writeFile(pathToMatthew + 'input.json', JSON.stringify(req.body), 'utf8', function (err) {
     if (err) {
