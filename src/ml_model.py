@@ -9,10 +9,10 @@ from nltk.corpus import stopwords as StopWords
 import numpy as np
 from gensim.models import KeyedVectors
 
-pathToBinVectors = '~/GoogleNews-vectors-negative300.bin'
+pathToBinVectors = '/mnt/ram-disk/Google-vectors.bin'
 
 # print ("Loading the data file... Please wait...")
-model1 = KeyedVectors.load_word2vec_format(pathToBinVectors, binary=True)
+model1 = KeyedVectors.load(pathToBinVectors, mmap='r')
 # print ("Successfully loaded 3.6 G bin file!")
 
 def ConvertVectorSetToVecAverageBased(vectorSet, ignore = []):
