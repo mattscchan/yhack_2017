@@ -46,36 +46,28 @@ router.post('/bias', function(req, res, next) {
 });
 
 router.post('/check', function(req, res, next) {
-  var pathToMatthew = __dirname + '/../../src/';
-  fs.writeFile(pathToMatthew + 'input.json', JSON.stringify(req.body), 'utf8', function (err) {
-    if (err) {
-      return console.log(err);
-    }
-    console.log("The file was saved!");
-  });
-
   var options = {
-    mode: 'text',
-    pythonOptions: ['-u'],
-    scriptPath: pathToMatthew,
-    args: [pathToMatthew + 'input.json']
+    method: "POST",
+    url: 'http://35.185.14.82:8080/check',
+    gzip: true,
+    json: {
+      target: req.body.target,
+      cluster: req.body.cluster
+      }
   };
 
-  PythonShell.run('ml_model.py', options, function (err, results) {
-    if (err) {
-      res.send({
-        status: 'failed',
-        error: err
-      })
+  request(options, function(error, response, body) {
+    console.log(response);
+    console.log(error);
+    if (!error) {
+      return {
+        status: 'success'
+      }
     } else {
-      // results is an array consisting of messages collected during execution
-      var output = require(pathToMatthew + '../output.json');
-      console.log('results:', results);
-      console.log('output.json:', output);
-      res.send({
-        status: 'success',
-        output: output
-      });
+      return {
+        status: 'error',
+        error: error
+      }
     }
   });
 });
