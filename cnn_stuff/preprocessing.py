@@ -13,21 +13,22 @@ def load_yelp(alphabet):
     with open('./yelp-review-dataset/yelp_academic_dataset_review.json') as f:
         i = 0
         for line in f:
-            review = json.loads(line)
-            stars = review["stars"]
-            text = review["text"]
-            if stars != 3:
-                padded = pad_sentence(list(text.lower()))
-                text_int8_repr = string_to_int8_conversion(padded, alphabet)
-                if stars == 1 or stars == 2:
-                    labels.append([1, 0])
-                    examples.append(text_int8_repr)
-                elif stars == 4 or stars == 5:
-                    labels.append([0, 1])
-                    examples.append(text_int8_repr)
-                i += 1
-                if i % 10000 == 0:
-                    print("Non-neutral instances processed: " + str(i))
+            article = json.loads(line)
+            title = article["target"]
+            body = article["body"]
+            text = title + body
+
+            padded = pad_sentence(list(text.lower()))
+            text_int8_repr = string_to_int8_conversion(padded, alphabet)
+            if article["label"] == :
+                labels.append([1, 0])
+                examples.append(text_int8_repr)
+            elif stars == 4 or stars == 5:
+                labels.append([0, 1])
+                examples.append(text_int8_repr)
+            i += 1
+            if i % 10000 == 0:
+                print("Instances processed: " + str(i))
     return examples, labels
 
 def pad_sentence(char_seq, padding_char=" "):

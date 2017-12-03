@@ -1,6 +1,6 @@
 import argparse
 import json
-from sklearn.feature_extraction.text import TfidfVectorizer
+# from sklearn.feature_extraction.text import TfidfVectorizer
 from nltk.tokenize import word_tokenize, sent_tokenize          
 from nltk.stem.porter import PorterStemmer
 from nltk import trigrams, bigrams
@@ -60,10 +60,10 @@ def preprocess(file_list, tf=False, stopwords=False):
 	# don't remove stopwords because probably important when talking about fake news
 	# we can try tf vs simple unigram/bigram count
 	if tf:
-		tf_vectorizer = TfidfVectorizer(analyzer="word",
-										ngram_range=(1,2),
-										tokenizer=StemTokenizer(),
-										string="english")
+		# tf_vectorizer = TfidfVectorizer(analyzer="word",
+		# 								ngram_range=(1,2),
+		# 								tokenizer=StemTokenizer(),
+		# 								string="english")
 	else: 
 		stemmer = PorterStemmer()
 		punct = [',', '.', '"']
