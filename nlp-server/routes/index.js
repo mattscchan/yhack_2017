@@ -14,8 +14,16 @@ var options = {
 
 var pyshell = new PythonShell('ml_model.py', options);
 
+pyshell.on('message', function(message) {
+  console.log('log:', message);
+});
+
 pyshell.on('error', function(error) {
-  console.log(error);
+  console.log('error received', error);
+});
+
+pyshell.on('close', function(error) {
+  console.log('python script closed', error);
 });
 
 router.post('/check', function(req, res, next) {
@@ -36,6 +44,13 @@ router.post('/check', function(req, res, next) {
         res.send({
           status: 'success',
           output: output
+        });
+      });
+
+      pyshell.on('error', function(error) {
+        res.send({
+          status: 'error',
+          output: error
         });
       });
     }
