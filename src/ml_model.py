@@ -168,13 +168,14 @@ def calculate_similarity(target_builder, cluster_builder, target_highlights):
 		vec_scores.append(vec)
 
 	for i in range(0, len(cluster_builder)):
+		if i == len(cluster_builder)-1:
+			break
 		for j in range(i+1, len(cluster_builder)):
 			cosine_similarity = CosineSimilarity(vec_scores[i], vec_scores[j])
 			average_diff += cosine_similarity
 
 			if cosine_similarity < max_diff:
 				max_diff = cosine_similarity
-
 
 	for file in target_builder:
 		target_vec = PhraseToVec(file)
