@@ -240,7 +240,7 @@ def main():
 
 	highlights, high_confidence = calculate_similarity(target_builder, cluster_builder, target_highlights)
 	write_json(highlights, high_confidence)
-	# print("DONE!")
+	print("DONE!")
 	# return
 
 main()
