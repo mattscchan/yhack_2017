@@ -121,7 +121,7 @@ def score_sentences(all_words, all_bigrams, all_sent, gram_probs):
 			feature_num = 0
 
 			# safety check
-			if all_words[file] == [] or all_bigrams[file]:
+			if all_words[file] == [] or all_bigrams[file] == []:
 				continue
 
 			for j in range(0, len(all_words[file][i])):
@@ -151,7 +151,7 @@ def get_highlight_sentences(all_sent, all_words, all_probs, min_num=2, percent=0
 			sentence_num = len(all_sent[file])
 
 		# safety check
-		if all_words[file] == [] or all_bigrams[file]:
+		if all_words[file] == [] or all_probs[file] == []:
 			continue
 
 		for i in range(0, sentence_num):
