@@ -21,22 +21,24 @@ pyshell.on('error', function(error) {
 router.post('/check', function(req, res, next) {
   fs.writeFile(pathToMatthew + 'input.json', JSON.stringify(req.body), 'utf8', function (err) {
     if (err) {
-      return console.log(err);
+      res.send({
+        status: 'error',
+        output: err
+      });
+    } else {
+      // sends a message to the Python script via stdin
+      pyshell.send(pathToMatthew + 'input.json');
+
+      pyshell.on('message', function (message) {
+        var output = require(pathToMatthew + '../output.json');
+        console.log('results:', message);
+        console.log('output.json:', output);
+        res.send({
+          status: 'success',
+          output: output
+        });
+      });
     }
-    console.log("The file was saved!");
-  });
-
-  // sends a message to the Python script via stdin
-  pyshell.send(pathToMatthew + 'input.json');
-
-  pyshell.on('message', function (message) {
-    var output = require(pathToMatthew + '../output.json');
-    console.log('results:', message);
-    console.log('output.json:', output);
-    res.send({
-      status: 'success',
-      output: output
-    });
   });
 });
 
