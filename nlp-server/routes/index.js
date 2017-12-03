@@ -25,7 +25,6 @@ router.post('/check', function(req, res, next) {
         status: 'error',
         output: err
       });
-      next();
     } else {
       // sends a message to the Python script via stdin
       pyshell.send(pathToMatthew + 'input.json');
@@ -38,7 +37,6 @@ router.post('/check', function(req, res, next) {
           status: 'success',
           output: output
         });
-        next();
       });
 
       pyshell.end(function(err) {
