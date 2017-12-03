@@ -122,7 +122,7 @@ def score_sentences(all_words, all_bigrams, all_sent, gram_probs):
 			print("sentence num", i)
 			print("file num", file)
 			print("number of sentences", len(all_sent[file]))
-			print("num of sentences in the word array")
+			print("num of sentences in the word array", len(all_words[file]))
 			print("num words in sentence", len(all_words[file][i]))
 			for j in range(0, len(all_words[file][i])):
 				total_prob += gram_probs[all_words[file][i][j]]
