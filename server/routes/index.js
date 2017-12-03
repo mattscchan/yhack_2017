@@ -11,7 +11,7 @@ router.get('/', function(req, res, next) {
 
 router.post('/bias', function(req, res, next) {
   var content = req.body.content;
-  console.log(content);
+  console.log('getting bias', content);
   var options = {
     method: "POST",
     url: 'https://language.googleapis.com/v1/documents:analyzeSentiment?key=AIzaSyAFFJOT6JFOIbd6mAVdfREyZ3pVEPtjQRI',
@@ -27,18 +27,19 @@ router.post('/bias', function(req, res, next) {
 
   request(options, function(error, response, body) {
     if (response.body) {
-      console.log(response.body);
+      console.log('got bias', response.body);
       var sentimentScore = response.body.documentSentiment.score;
       res.send({
         score: sentimentScore,
-        isBias: Math.abs(sentimentScore) > 0.4
+        isBias: Math.abs(sentimentScore) > 0.3
       })
 
     } else {
-      return {
+      console.log('got error for bias', error);
+      res.send({
         score: 123456789,
         isBias: false
-      }
+      });
     }
 
   });
