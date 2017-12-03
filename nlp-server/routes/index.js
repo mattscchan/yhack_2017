@@ -12,11 +12,7 @@ var options = {
   pythonPath: '/usr/bin/python3'
 };
 
-console.log('Starting up nlp-server...');
 var pyshell = new PythonShell('ml_model.py', options);
-pyshell.on('message', function(message) {
-  console.log(message);
-});
 
 pyshell.on('error', function(error) {
   console.log(error);
