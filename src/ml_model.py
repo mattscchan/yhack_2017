@@ -119,10 +119,11 @@ def score_sentences(all_words, all_bigrams, all_sent, gram_probs):
 		for i in range(0, len(all_sent[file])):
 			total_prob = 0
 			feature_num = 0
-			print(i)
-			print(file)
-			print(len(all_sent[file]))
-			print(len(all_sent[file][i]))
+
+			# safety check
+			if i > len(all_words[file])-1 or i > len(all_bigrams[file])-1:
+				continue
+
 			for j in range(0, len(all_words[file][i])):
 				total_prob += gram_probs[all_words[file][i][j]]
 				feature_num += 1
@@ -150,6 +151,11 @@ def get_highlight_sentences(all_sent, all_words, all_probs, min_num=2, percent=0
 			sentence_num = len(all_sent[file])
 
 		for i in range(0, sentence_num):
+
+			# safety check
+			if i > len(all_words[file])-1 or i > len(all_probs[file])-1:
+				continue
+
 			max_index = np.argmax(all_probs[file][i])
 			per_file_highlights.append(all_sent[file][max_index]) 
 			per_file_words.append(all_words[file][max_index])
