@@ -11,9 +11,9 @@ from gensim.models import KeyedVectors
 
 pathToBinVectors = '../../GoogleNews-vectors-negative300.bin'
 
-# print ("Loading the data file... Please wait...")
+print ("Loading the data file... Please wait...")
 model1 = KeyedVectors.load_word2vec_format(pathToBinVectors, binary=True)
-# print ("Successfully loaded 3.6 G bin file!")
+print ("Successfully loaded 3.6 G bin file!")
 
 def ConvertVectorSetToVecAverageBased(vectorSet, ignore = []):
 	if len(ignore) == 0: 
