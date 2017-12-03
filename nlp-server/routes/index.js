@@ -3,16 +3,10 @@ var router = express.Router();
 var request = require('request');
 var PythonShell = require('python-shell');
 var fs = require('fs');
-var pyshell = new PythonShell('ml_model.py', options);
+var pathToMatthew = __dirname + '/../../src/';
 
 router.post('/check', function(req, res, next) {
-  var pathToMatthew = __dirname + '/../../src/';
-  fs.writeFile(pathToMatthew + 'input.json', JSON.stringify(req.body), 'utf8', function (err) {
-    if (err) {
-      return console.log(err);
-    }
-    console.log("The file was saved!");
-  });
+  console.log('got request', req.body);
 
   var options = {
     mode: 'text',
@@ -22,17 +16,31 @@ router.post('/check', function(req, res, next) {
     pythonPath: '/usr/bin/python3'
   };
 
-  // sends a message to the Python script via stdin
-  pyshell.send(pathToMatthew + 'input.json');
+  var pyshell = new PythonShell('ml_model.py', options);
 
-  pyshell.on('message', function (message) {
-    var output = require(pathToMatthew + '../output.json');
-    console.log('results:', message);
-    console.log('output.json:', output);
-    res.send({
-      status: 'success',
-      output: output
-    });
+  fs.writeFile(pathToMatthew + 'input.json', JSON.stringify(req.body), 'utf8', function (err) {
+    if (err) {
+      console.log('error writing file', err);
+      res.send({
+        status: 'error',
+        output: err
+      });
+      next();
+    } else {
+      // sends a message to the Python script via stdin
+      pyshell.send(pathToMatthew + 'input.json');
+
+      pyshell.on('message', function (message) {
+        var output = require(pathToMatthew + '../output.json');
+        console.log('results:', message);
+        console.log('output.json:', output);
+        res.send({
+          status: 'success',
+          output: output
+        });
+        next();
+      });
+    }
   });
 });
 

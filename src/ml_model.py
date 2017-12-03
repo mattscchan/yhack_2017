@@ -9,10 +9,11 @@ from nltk.corpus import stopwords as StopWords
 import numpy as np
 from gensim.models import KeyedVectors
 
-pathToBinVectors = '/home/mattchan/yhacks_2017/GoogleNews-vectors-negative300.bin'
+pathToBinVectors = '/mnt/ram-disk/Google-vectors.bin'
 
 # print ("Loading the data file... Please wait...")
-model1 = KeyedVectors.load_word2vec_format(pathToBinVectors, binary=True)
+model1 = KeyedVectors.load(pathToBinVectors, mmap='r')
+model1.syn0norm = model1.syn0  # prevent recalc of normed vectors
 # print ("Successfully loaded 3.6 G bin file!")
 
 def ConvertVectorSetToVecAverageBased(vectorSet, ignore = []):
@@ -51,7 +52,6 @@ class StemTokenizer(object):
 
 def preprocess(file_list, tf=False, stopwords=False):
 	all_sent = []
-	all_trigrams = []
 	all_bigrams = []
 	all_words = []
 	gram_probs = Counter()
@@ -73,7 +73,6 @@ def preprocess(file_list, tf=False, stopwords=False):
 
 			# split the files into sentences and score the difference of the sentences
 			bigram_sent = []
-			trigram_sent = []
 			words_sent = []
 			sent_list = sent_tokenize(file)
 			all_sent.append(sent_list)
@@ -85,7 +84,6 @@ def preprocess(file_list, tf=False, stopwords=False):
 				word_list = [word.lower() for word in word_list]
 
 				# get n_grams
-				ngrams_3 = trigrams(word_list) 
 				ngrams_2 = bigrams(word_list)
 
 				# clean out stopwords after we get n_grams split them into the sentences to calc prob
@@ -93,18 +91,14 @@ def preprocess(file_list, tf=False, stopwords=False):
 					word_list = [word for word in word_list if word not in StopWords.words('english')]
 				words_sent.append(word_list)
 
-				for el in ngrams_3:
-					trigram_sent.append(el)
 
 				for el in ngrams_2:
 					bigram_sent.append(el)
 
 				# count occurences
-				gram_probs.update(ngrams_3)
 				gram_probs.update(ngrams_2)
 				gram_probs.update(word_list)
 
-			all_trigrams.append(trigram_sent)
 			all_bigrams.append(bigram_sent)
 			all_words.append(word_list)
 
@@ -115,9 +109,9 @@ def preprocess(file_list, tf=False, stopwords=False):
 	for key in gram_probs.keys():
 		gram_probs[key] /= (float) (total_features)
 
-	return all_words, all_bigrams, all_trigrams, all_sent, gram_probs
+	return all_words, all_bigrams, all_sent, gram_probs
 
-def score_sentences(all_words, all_bigrams, all_trigrams, all_sent, gram_probs):
+def score_sentences(all_words, all_bigrams, all_sent, gram_probs):
 	all_probs = []
 
 	for file in range(0, len(all_sent)):
@@ -130,9 +124,6 @@ def score_sentences(all_words, all_bigrams, all_trigrams, all_sent, gram_probs):
 				feature_num += 1
 			for j in range(0, len(all_bigrams[file][i])):
 				total_prob += gram_probs[all_bigrams[file][i][j]]
-				feature_num += 1
-			for j in range(0, len(all_trigrams[file][i])):
-				total_prob += gram_probs[all_trigrams[file][i][j]]
 				feature_num += 1
 			sent_probs.append(total_prob/feature_num)
 		all_probs.append(sent_probs)
@@ -214,28 +205,26 @@ def parse_json(filename):
 def main():
 	running = "run"
 
-	while True:
+	# while True:
 
-		running = input()
+	# 	running = input()
 
-		if running == "exit":
-			return
+	# 	if running == "exit":
+	# 		return
 
-		target_article, cluster_list = parse_json("/home/mattchan/yhacks_2017/yhack_2017/src/input.json") 
-		
-		words_sent, bigram_sent, trigram_sent, sent_list, gram_probs = preprocess(target_article)
-		sent_probs = score_sentences(words_sent, bigram_sent, trigram_sent, sent_list, gram_probs)
-		target_highlights, target_builder = get_highlight_sentences(sent_list, words_sent, sent_probs)
+	target_article, cluster_list = parse_json("/home/mattchan/yhacks_2017/yhack_2017/src/input.json") 
+	
+	words_sent, bigram_sent, sent_list, gram_probs = preprocess(target_article)
+	sent_probs = score_sentences(words_sent, bigram_sent, sent_list, gram_probs)
+	target_highlights, target_builder = get_highlight_sentences(sent_list, words_sent, sent_probs)
 
-		words_sent, bigram_sent, trigram_sent, sent_list, gram_probs = preprocess(cluster_list)
-		sent_probs = score_sentences(words_sent, bigram_sent, trigram_sent, sent_list, gram_probs)
-		cluster_highlights, cluster_builder = get_highlight_sentences(sent_list, words_sent, sent_probs)
+	words_sent, bigram_sent, sent_list, gram_probs = preprocess(cluster_list)
+	sent_probs = score_sentences(words_sent, bigram_sent, sent_list, gram_probs)
+	cluster_highlights, cluster_builder = get_highlight_sentences(sent_list, words_sent, sent_probs)
 
-		highlights, high_confidence = calculate_similarity(target_builder, cluster_builder, target_highlights)
-		write_json(highlights, high_confidence)
-		print("DONE!")
+	highlights, high_confidence = calculate_similarity(target_builder, cluster_builder, target_highlights)
+	write_json(highlights, high_confidence)
+	print("DONE!")
+	return
 
-
-
-if __name__ == '__main__':
-	main()
+main()
