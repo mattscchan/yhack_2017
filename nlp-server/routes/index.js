@@ -13,6 +13,10 @@ var options = {
 };
 
 var pyshell = new PythonShell('ml_model.py', options);
+console.log('Starting up nlp-server...');
+pyshell.on('message', function(message) {
+  console.log(message);
+});
 
 router.post('/check', function(req, res, next) {
   fs.writeFile(pathToMatthew + 'input.json', JSON.stringify(req.body), 'utf8', function (err) {
