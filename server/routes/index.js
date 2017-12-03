@@ -46,9 +46,12 @@ router.post('/bias', function(req, res, next) {
 });
 
 router.post('/check', function(req, res, next) {
+
+  console.log( req.body.target,  req.body.cluster);
+
   var options = {
     method: "POST",
-    url: 'http://35.185.14.82:8080/check',
+    url: 'http://35.196.197.149:8080/check',
     gzip: true,
     json: {
       target: req.body.target,

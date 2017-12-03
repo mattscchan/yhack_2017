@@ -40,6 +40,19 @@ router.post('/check', function(req, res, next) {
         });
         next();
       });
+
+      pyshell.end(function(err) {
+        if (err) {
+          console.log('error!', err);
+          res.send({
+            status: 'error',
+            output: {
+              payload: [],
+              confidence: -1
+            }
+          })
+        }
+      });
     }
   });
 });

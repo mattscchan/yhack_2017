@@ -50,6 +50,8 @@ function getTitle(){
             }).always(function(){
                 var motherPayload = {"target": targetArticle, "cluster": clusterRaw};
                 if (counter++ === data.value.length-1)  {
+                    console.log("HEHEHEHEHEHEHEHEHE", motherPayload);
+                    
                     $.ajax({
                         url: "https://fake.kevinnam.me/check",
                         method: "POST",
@@ -57,11 +59,18 @@ function getTitle(){
                         contentType: "application/json; charset=utf-8",
                         data : JSON.stringify(motherPayload),
                       }).done(function(data) {
+                        
                           console.log(data);
+                          //data.output.payload //this is list of strings
+                          //data.out.confidence //confidence number from -1 to 1
+                          for(var i =0;i<data.out.payload.length;i++){
+                            highlightAndSuggest(data.out.payload[i]);
+                            console.log(data.out.confidence);
+                          }
+                          //HERE WE SHOULD HIGHLIGHT STRING
                         //https://fake.kevinnam.me/check
                         
                       });
-                      console.log(clusterLinks);
                     // console.log(clusterRaw);
                     // console.log(targetArticle);
                 }         

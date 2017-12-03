@@ -38,7 +38,7 @@ var getBias = function() {
 };
 
 var highlightYellow = function(string, index) {
-  var replaced = $("body").html().replace(string, '<span style="background-color: yellow;" title="tooltip" class="hoverableSuggestableFakeNews-' + index +'">' + string + '</span>');
+  var replaced = $("body").html().replace(string, '<span style="background-color: coral;" title="tooltip" class="hoverableSuggestableFakeNews-' + index +'">' + string + '</span>');
   $("body").html(replaced);
 };
 

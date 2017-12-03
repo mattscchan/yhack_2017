@@ -6,10 +6,10 @@ import urllib.request
 import codecs
 import time
 import lxml.html
-#from HTMLParser import HTMLParser
+from bs4 import BeautifulSoup#from HTMLParser import HTMLParser
 
 
-with open("fake_or_real_news.json") as data_files:
+with open("fake_or_real_news.json", encoding="utf8") as data_files:
     
     doc = json.load(data_files)
     #doc = json.load(codecs.open("fake_or_real_news.json", 'r', 'utf-8-sig'))
@@ -35,17 +35,28 @@ with open("fake_or_real_news.json") as data_files:
         with urllib.request.urlopen(req) as response:
             content = json.loads(response.read().decode(response.info().get_param('charset') or 'utf-8'))
 
-        
+        allArticles = []
         for i in range(len(content["value"])):
             print(content["value"][i]["url"])
             req = urllib.request.Request( url=content["value"][i]["url"])
-            with urllib.request.urlopen(req) as response:
-                htmlRaw = (response.read().decode(response.info().get_param('charset') or 'utf-8'))
-                print(htmlRaw)
-                soup = BeautifulSoup.BeautifulSoup(htmlRaw)
-
-                for anchor in soup.findAll('a'):
-                    print (anchor['href'], anchor.string)
+            try:
+                with urllib.request.urlopen(req) as response:
+                    htmlRaw = (response.read().decode(response.info().get_param('charset') or 'utf-8'))
+                    article = []
+                    #print(htmlRaw)
+                    #soup = BeautifulSoup.BeautifulSoup(htmlRaw)
+                    soup = BeautifulSoup(htmlRaw, 'html.parser')
+                    for anchor in soup.findAll('p'):
+                        if (anchor.string != None):
+                            article.append(anchor.string.encode('utf-8'))
+                            #print (anchor.string.encode('utf-8'))
+            except urllib.error.HTTPError :
+                print ("too bad")
+            allArticles.append(article)
+        ex['blob'] = allArticles
+        with open("fake_or_real_news.json", 'wb') as outfile:
+            json.dump(doc, outfile)
 
         if (idx > 4):
+            
             break
