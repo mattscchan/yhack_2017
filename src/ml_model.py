@@ -119,11 +119,11 @@ def score_sentences(all_words, all_bigrams, all_sent, gram_probs):
 		for i in range(0, len(all_sent[file])):
 			total_prob = 0
 			feature_num = 0
-			print("sentence num", i)
-			print("file num", file)
-			print("number of sentences", len(all_sent[file]))
-			print("num of sentences in the word array")
-			print("num words in sentence", len(all_words[file][i]))
+			
+			# safety check
+			if all_words[file] == [] || all_bigrams[file]:
+				continue
+
 			for j in range(0, len(all_words[file][i])):
 				total_prob += gram_probs[all_words[file][i][j]]
 				feature_num += 1
