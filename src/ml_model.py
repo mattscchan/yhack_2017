@@ -13,7 +13,7 @@ pathToBinVectors = '/mnt/ram-disk/Google-vectors.bin'
 
 # print ("Loading the data file... Please wait...")
 model1 = KeyedVectors.load(pathToBinVectors, mmap='r')
-model1.syn0norm = model.syn0  # prevent recalc of normed vectors
+model1.syn0norm = model1.syn0  # prevent recalc of normed vectors
 # print ("Successfully loaded 3.6 G bin file!")
 
 def ConvertVectorSetToVecAverageBased(vectorSet, ignore = []):
@@ -109,7 +109,7 @@ def preprocess(file_list, tf=False, stopwords=False):
 	for key in gram_probs.keys():
 		gram_probs[key] /= (float) (total_features)
 
-	return all_words, all_bigrams, all_trigrams, all_sent, gram_probs
+	return all_words, all_bigrams, all_sent, gram_probs
 
 def score_sentences(all_words, all_bigrams, all_sent, gram_probs):
 	all_probs = []
@@ -226,7 +226,4 @@ def main():
 	write_json(highlights, high_confidence)
 	print("DONE!")
 
-
-
-if __name__ == '__main__':
-	main()
+main()
